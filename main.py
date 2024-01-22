@@ -23,7 +23,6 @@ def exec_command(args, debug=debug):
     else:
         return subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-# Clone the repository
 print("\n-------------------CLONING REPO-------------------\n")
 if os.path.exists(repo_name):
     os.chdir(repo_name)
@@ -34,24 +33,19 @@ else:
     os.chdir(repo_name)
 
 print("------------------BUILDING CRATE------------------\n")
-# Build the crate
 exec_command(["cargo", "build", "--release"])
 
-# Change directory to target/release
 os.chdir("target/release")
 
 print("-------------CREATING TARBALL AND HASH------------\n")
-# Create a tarball
 tar_name = f"{repo_name}-mac.tar.gz"
 tar_command = ["tar", "-czf", tar_name, repo_name]
 exec_command(tar_command)
 
-# Compute SHA-256 hashsum
 hash_command = ["shasum", "-a", "256", tar_name]
 hash = subprocess.check_output(hash_command).decode().split()[0]
 
 print("----------------CREATING BREW REPO----------------\n")
-# Create a new public repo if it doesn't exist
 brew_repo_name = "homebrew-" + repo_name
 exec_command(["gh", "repo", "create", brew_repo_name, "--public"])
 
@@ -60,7 +54,6 @@ lines = output.split('\n')
 username = next((line.split()[-2] for line in lines if "Logged in to github.com account" in line), None)
 
 print("---------------CREATING NEW RELEASE---------------\n")
-# Create a new release with GitHub CLI
 title = f"v{version}"
 result = exec_command(["gh", "release", "--repo", f"{username}/{repo_name}", "create", "--generate-notes", version, tar_name])
 if result.returncode != 0:
@@ -88,7 +81,6 @@ end
     return config
 
 print("--------------UPDATING BREW FORMULA---------------\n")
-# Get brew repo and update it
 os.chdir("../../../")
 if os.path.exists(brew_repo_name):
     os.chdir(brew_repo_name)
