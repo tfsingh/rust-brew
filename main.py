@@ -2,9 +2,9 @@ import os
 import subprocess
 import sys
 
-repo_name = "dummy"
-description = "dummy grep"
-version = "1.0.3"
+repo_name = ""
+description = ""
+version = ""
 deps = []
 debug = False
 
