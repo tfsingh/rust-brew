@@ -82,11 +82,9 @@ end
 
 print("--------------UPDATING BREW FORMULA---------------\n")
 os.chdir("../../../")
-if os.path.exists(brew_repo_name):
-    os.chdir(brew_repo_name)
-else:
+if not os.path.exists(brew_repo_name):
     exec_command(["gh", "repo", "clone", brew_repo_name])
-    os.chdir(brew_repo_name)
+os.chdir(brew_repo_name)
 
 with open("README.md", "w") as f:
     f.write(f"# {repo_name}")
